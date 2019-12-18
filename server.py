@@ -280,7 +280,7 @@ class GetHandler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps(err_msg).encode('utf-8'))
             return
 
-        data = json.loads(json.loads(form)['param'])
+        data = json.loads(form)['param']
 
         if 'text' not in data:
             err_msg = [{"error": "no text"}]
@@ -290,7 +290,6 @@ class GetHandler(BaseHTTPRequestHandler):
             return
 
         text = str(data['text'])
-        # print(datetime.now().strftime(time_format), 'Input:', text)
 
         if text == '':
             err_msg = [{"error": "empty text"}]
@@ -525,6 +524,8 @@ def count_entities(data):
 def tell_inputfile(host, port, inputfile):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    print('==============')
+    print(host, port)
     try:
         sock.connect((host, port))
     except ConnectionRefusedError as cre:
