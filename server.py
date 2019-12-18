@@ -261,13 +261,9 @@ class GetHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         post_start_t = time.time()
-        form = cgi.FieldStorage(
-            fp=self.rfile,
-            headers=self.headers,
-            environ={'REQUEST_METHOD': 'POST',
-                     'CONTENT_TYPE': self.headers['Content-Type'],
-                     }
-        )
+
+        content_length = int(self.headers['Content-Length'])
+        form = self.rfile.read(content_length).decode('utf-8')
 
         self.send_response(200)
         self.end_headers()
@@ -284,7 +280,7 @@ class GetHandler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps(err_msg).encode('utf-8'))
             return
 
-        data = json.loads(form['param'].value)
+        data = json.loads(json.loads(form)['param'])
 
         if 'text' not in data:
             err_msg = [{"error": "no text"}]
